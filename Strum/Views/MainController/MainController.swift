@@ -132,6 +132,7 @@ extension MainController: UITableViewDataSource, UITableViewDelegate {
             cell.dayMeterDataLabel.text = "\(indication.dayMeter)"
             cell.nightMeterDataLabel.text = "\(indication.nightMeter)"
             cell.monthLabel.textColor = .black
+            print(indication.transferDate)
         }
         
         cell.monthLabel.text = monthes[rowCountForCurrentSection-indexPath.row].rawValue
@@ -173,6 +174,7 @@ extension MainController: DetailViewControllerDelegate {
             if let data = data {
                 indicationData.append(data)
                 saveManager.saveData(indicationData)
+                yearsArray = yearAnalysis.obtainYears(in: indicationData)
                 tableView.reloadData()
             }
             
