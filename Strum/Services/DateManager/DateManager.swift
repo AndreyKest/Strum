@@ -51,4 +51,10 @@ class DateManager {
         }
         return ""
     }
+    
+    func stringToDate(_ stringDate: String) -> Date {
+        dateFormatter.dateFormat = "dd/MM/yyyy"
+        guard let resultDate = dateFormatter.date(from: stringDate) else { return currentDate }
+        return resultDate
+    }
 }

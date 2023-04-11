@@ -24,10 +24,6 @@ class DetailViewController: BaseController {
     
     var indicationFromCell: FlowIndication?
     
-    lazy var indicationDataArray: [FlowIndication] = {
-        return []
-    }()
-    
     private let dayMeterLabel: UILabel = {
         let label = UILabel()
         label.text = "День:"
@@ -68,7 +64,7 @@ class DetailViewController: BaseController {
         return stackView
     }()
     
-    let dateLabel: UILabel = {
+    private let dateLabel: UILabel = {
         let label = UILabel()
         label.text = "Дата считывания:"
         return label
@@ -127,7 +123,7 @@ extension DetailViewController {
         super.configureAppearance()
         view.backgroundColor = .white
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(saveDone))
-        dateStackView.isHidden = true
+        dateStackView.isUserInteractionEnabled = false
     }
     
     @objc func saveDone() {
@@ -139,7 +135,7 @@ extension DetailViewController {
             indicationFromCell?.dayMeter = dayMeter ?? 0
             indicationFromCell?.nightMeter = nightMeter ?? 0
             status = .change
-        } else if dateStackView.isHidden == false {
+        } else if dateStackView.isUserInteractionEnabled == true {
             let choosenData = dateManager.getStringFromData(date: datePicker.date)
             indicationFromCell = FlowIndication(dayMeter: dayMeter ?? 0,
                                             nightMeter: nightMeter ?? 0,

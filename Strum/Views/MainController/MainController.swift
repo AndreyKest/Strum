@@ -77,7 +77,7 @@ extension MainController {
         let detailVC = DetailViewController()
         
         detailVC.delegate = self
-        detailVC.dateStackView.isHidden = false
+        detailVC.dateStackView.isUserInteractionEnabled = true
         navigationController?.pushViewController(detailVC, animated: true)
     }
     
@@ -150,11 +150,15 @@ extension MainController: UITableViewDataSource, UITableViewDelegate {
         let indication = getCurrentIndication(indexPath: indexPath, rowCount: rowCountForCurrentSection)
         
         detailVC.indicationFromCell = indication
-        detailVC.indicationDataArray = indicationData
+        
+        if indication == nil {
+            detailVC.dateStackView.isHidden = true
+        } else {
+            detailVC.datePicker.date = dateManager.stringToDate(indication!.transferDate)
+        }
         
         navigationController?.pushViewController(detailVC, animated: true)
     }
-    
 }
 
 extension MainController: DetailViewControllerDelegate {
@@ -203,3 +207,16 @@ extension MainController: DetailViewControllerDelegate {
     }
 }
 
+
+//MARK: - Swipe delete data extension
+extension MainController {
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (action, view, handler) in
+                //YOUR_CODE_HERE
+            }
+            deleteAction.backgroundColor = .red
+            let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+            configuration.performsFirstActionWithFullSwipe = false
+            return configuration
+    }
+}
