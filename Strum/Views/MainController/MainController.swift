@@ -149,7 +149,8 @@ extension MainController: UITableViewDataSource, UITableViewDelegate {
         let rowCountForCurrentSection = tableView.numberOfRows(inSection: indexPath.section)-1
         let indication = getCurrentIndication(indexPath: indexPath, rowCount: rowCountForCurrentSection)
         
-        detailVC.indicationData = indication
+        detailVC.indicationFromCell = indication
+        detailVC.indicationDataArray = indicationData
         
         navigationController?.pushViewController(detailVC, animated: true)
     }
@@ -157,28 +158,48 @@ extension MainController: UITableViewDataSource, UITableViewDelegate {
 }
 
 extension MainController: DetailViewControllerDelegate {
+    
+    private enum ChangeStatus {
+        case succes
+        case fail
+    }
+    
+    private func saveAndReload(_ data: [FlowIndication]) {
+        saveManager.saveData(data)
+        tableView.reloadData()
+    }
+    
     func changeData(_ data: FlowIndication?, status: Status) {
         guard let indication = data else { return }
         switch status {
         case .change:
-            if let indiactionValue = indicationData.enumerated().first(where: { $0.element.transferDate == indication.transferDate }) {
-                
-                indicationData.remove(at: indiactionValue.offset)
-                indicationData.insert(indication, at: indiactionValue.offset)
-                
-                saveManager.saveData(indicationData)
-                
-                tableView.reloadData()
+            if change(indication) == .fail {
+                break
             }
         case .add:
-            if let data = data {
+            if change(indication) == .succes {
+                break
+            } else {
+                guard let data = data else { break }
                 indicationData.append(data)
-                saveManager.saveData(indicationData)
                 yearsArray = yearAnalysis.obtainYears(in: indicationData)
-                tableView.reloadData()
+                saveAndReload(indicationData)
             }
             
         }
+    }
+    
+    private func change(_ data: FlowIndication) -> ChangeStatus {
+        if let indiactionValue = indicationData.enumerated().first(where: { dateManager.monthFromDate($0.element.transferDate) == dateManager.monthFromDate(data.transferDate) && dateManager.yearFromDate($0.element.transferDate) == dateManager.yearFromDate(data.transferDate) }) {
+            
+            indicationData.remove(at: indiactionValue.offset)
+            indicationData.insert(data, at: indiactionValue.offset)
+            
+            saveAndReload(indicationData)
+            
+            return .succes
+        }
+        return .fail
     }
 }
 

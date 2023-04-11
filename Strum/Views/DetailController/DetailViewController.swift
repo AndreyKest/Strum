@@ -22,7 +22,11 @@ class DetailViewController: BaseController {
     
     weak var delegate: DetailViewControllerDelegate?
     
-    var indicationData: FlowIndication?
+    var indicationFromCell: FlowIndication?
+    
+    lazy var indicationDataArray: [FlowIndication] = {
+        return []
+    }()
     
     private let dayMeterLabel: UILabel = {
         let label = UILabel()
@@ -127,26 +131,26 @@ extension DetailViewController {
     }
     
     @objc func saveDone() {
-        let dayMeter = Int(dayMeterTextField.text ?? "0") ?? indicationData?.dayMeter
-        let nightMeter = Int(nightMeterTextField.text ?? "0") ?? indicationData?.nightMeter
+        let dayMeter = Int(dayMeterTextField.text ?? "0") ?? indicationFromCell?.dayMeter
+        let nightMeter = Int(nightMeterTextField.text ?? "0") ?? indicationFromCell?.nightMeter
         var status = Status.add
         
-        if indicationData != nil {
-            indicationData?.dayMeter = dayMeter ?? 0
-            indicationData?.nightMeter = nightMeter ?? 0
+        if indicationFromCell != nil {
+            indicationFromCell?.dayMeter = dayMeter ?? 0
+            indicationFromCell?.nightMeter = nightMeter ?? 0
             status = .change
         } else if dateStackView.isHidden == false {
             let choosenData = dateManager.getStringFromData(date: datePicker.date)
-            indicationData = FlowIndication(dayMeter: dayMeter ?? 0,
+            indicationFromCell = FlowIndication(dayMeter: dayMeter ?? 0,
                                             nightMeter: nightMeter ?? 0,
                                             transferDate: choosenData)
         }
-        delegate?.changeData(indicationData, status: status)
+        delegate?.changeData(indicationFromCell, status: status)
         navigationController?.popToRootViewController(animated: true)
     }
     
     func setIndicationDataValue() {
-        guard let indication = indicationData else { return }
+        guard let indication = indicationFromCell else { return }
         dayMeterTextField.text = "\(indication.dayMeter)"
         nightMeterTextField.text = "\(indication.nightMeter)"
     }
