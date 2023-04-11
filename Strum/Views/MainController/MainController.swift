@@ -70,10 +70,10 @@ extension MainController {
         super.configureAppearance()
         view.backgroundColor = R.Colors.background
         configureTableView()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "New", style: .plain, target: self, action: #selector(saveDone))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "New", style: .plain, target: self, action: #selector(addIndication))
     }
     
-    @objc func saveDone() {
+    @objc func addIndication() {
         let detailVC = DetailViewController()
         
         detailVC.delegate = self
