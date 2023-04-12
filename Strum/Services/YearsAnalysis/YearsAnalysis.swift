@@ -10,12 +10,12 @@ import Foundation
 class YearsAnalysis {
     
     func obtainYears(in data: [FlowIndication]) -> [String] {
-        var resultArray: [String] = []
+        var uniqueYears: Set<String> = []
         for value in data {
             guard let year = value.transferDate.components(separatedBy: "/").last else { continue }
-            resultArray.append(year)
+            uniqueYears.insert(year)
         }
-        resultArray = resultArray.sorted(by: { $0 > $1 })
-        return resultArray
+        let sortedYears = uniqueYears.sorted(by: >)
+        return sortedYears
     }
 }

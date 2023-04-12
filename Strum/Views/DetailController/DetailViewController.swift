@@ -10,6 +10,7 @@ import UIKit
 enum Status {
     case add
     case change
+    case delete
 }
 
 protocol DetailViewControllerDelegate: AnyObject {

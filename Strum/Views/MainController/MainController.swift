@@ -95,7 +95,6 @@ extension MainController {
         }
         return indication
     }
-    
 }
 
 
@@ -132,7 +131,6 @@ extension MainController: UITableViewDataSource, UITableViewDelegate {
             cell.dayMeterDataLabel.text = "\(indication.dayMeter)"
             cell.nightMeterDataLabel.text = "\(indication.nightMeter)"
             cell.monthLabel.textColor = .black
-            print(indication.transferDate)
         }
         
         cell.monthLabel.text = monthes[rowCountForCurrentSection-indexPath.row].rawValue
@@ -160,6 +158,8 @@ extension MainController: UITableViewDataSource, UITableViewDelegate {
         navigationController?.pushViewController(detailVC, animated: true)
     }
 }
+
+//MARK: = Change indication on DetailVC
 
 extension MainController: DetailViewControllerDelegate {
     
@@ -189,7 +189,11 @@ extension MainController: DetailViewControllerDelegate {
                 yearsArray = yearAnalysis.obtainYears(in: indicationData)
                 saveAndReload(indicationData)
             }
-            
+        case .delete:
+            guard let data = data else { break }
+            indicationData.removeAll(where: { $0 == data })
+            yearsArray = yearAnalysis.obtainYears(in: indicationData)
+            saveAndReload(indicationData)
         }
     }
     
@@ -211,12 +215,32 @@ extension MainController: DetailViewControllerDelegate {
 //MARK: - Swipe delete data extension
 extension MainController {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let rowCountForCurrentSection = tableView.numberOfRows(inSection: indexPath.section)-1
+        guard let indication = getCurrentIndication(indexPath: indexPath, rowCount: rowCountForCurrentSection) else { return nil }
+        
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (action, view, handler) in
-                //YOUR_CODE_HERE
-            }
-            deleteAction.backgroundColor = .red
-            let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
-            configuration.performsFirstActionWithFullSwipe = false
-            return configuration
+            
+            self.deleteAlert(indication: indication)
+            handler(true)
+        }
+        deleteAction.backgroundColor = .red
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        configuration.performsFirstActionWithFullSwipe = false
+        return configuration
+    }
+    
+    private func deleteAlert(indication: FlowIndication) {
+        let alert = UIAlertController(title: "Hello", message: "Allert was shown", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { _ in
+            print("Delete")
+            self.changeData(indication, status: .delete)
+        }
+        
+        alert.addAction(cancelAction)
+        alert.addAction(deleteAction)
+        
+        present(alert, animated: true, completion: nil)
     }
 }

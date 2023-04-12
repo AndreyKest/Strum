@@ -55,6 +55,7 @@ class MainTableViewCell: UITableViewCell {
         super.prepareForReuse()
         dayMeterDataLabel.text = ""
         nightMeterDataLabel.text = ""
+        monthLabel.textColor = .gray
     }
 }
 

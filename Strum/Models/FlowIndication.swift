@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FlowIndication: Codable {
+struct FlowIndication: Codable, Equatable {
     
     var dayMeter: Int
     var nightMeter: Int
