@@ -18,4 +18,15 @@ class YearsAnalysis {
         let sortedYears = uniqueYears.sorted(by: >)
         return sortedYears
     }
+    
+    func nextDate(after date: FlowIndication, in dates: [FlowIndication]) -> FlowIndication? {
+        guard let index = dates.firstIndex(of: date) else {
+            return nil
+        }
+        let nextIndex = index + 1
+        if nextIndex >= dates.count {
+            return nil
+        }
+        return dates[nextIndex]
+    }
 }

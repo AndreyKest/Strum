@@ -44,6 +44,9 @@ class MainController: BaseController {
         //indicationData = saveManager.obtainData()
         //saveManager.saveData(indicationData)
         indicationData = saveManager.obtainData()
+        indicationData.forEach { data in
+            print(data.transferDate)
+        }
     }
     
 }
@@ -131,6 +134,10 @@ extension MainController: UITableViewDataSource, UITableViewDelegate {
             cell.dayMeterDataLabel.text = "\(indication.dayMeter)"
             cell.nightMeterDataLabel.text = "\(indication.nightMeter)"
             cell.monthLabel.textColor = .black
+            if let nextIndication = yearAnalysis.nextDate(after: indication, in: indicationData) {
+                let price = ((indication.dayMeter - nextIndication.dayMeter) * 1.68) + ((indication.nightMeter - nextIndication.nightMeter) * 0.9)
+                cell.monthDifferenceCount.text = "\(price)"
+            }
         }
         
         cell.monthLabel.text = monthes[rowCountForCurrentSection-indexPath.row].rawValue
@@ -171,6 +178,9 @@ extension MainController: DetailViewControllerDelegate {
     private func saveAndReload(_ data: [FlowIndication]) {
         saveManager.saveData(data)
         tableView.reloadData()
+        indicationData.forEach { data in
+            print(data.transferDate)
+        }
     }
     
     func changeData(_ data: FlowIndication?, status: Status) {
@@ -186,6 +196,7 @@ extension MainController: DetailViewControllerDelegate {
             } else {
                 guard let data = data else { break }
                 indicationData.append(data)
+                indicationData = saveManager.sortedDataArray(indicationData)
                 yearsArray = yearAnalysis.obtainYears(in: indicationData)
                 saveAndReload(indicationData)
             }
@@ -203,6 +214,7 @@ extension MainController: DetailViewControllerDelegate {
             indicationData.remove(at: indiactionValue.offset)
             indicationData.insert(data, at: indiactionValue.offset)
             
+            indicationData = saveManager.sortedDataArray(indicationData)
             saveAndReload(indicationData)
             
             return .succes

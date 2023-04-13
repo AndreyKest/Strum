@@ -40,6 +40,12 @@ class MainTableViewCell: UITableViewCell {
         return label
     }()
     
+    let monthDifferenceCount: UILabel = {
+        let label = UILabel()
+        label.textColor = .green
+        return label
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addView()
@@ -56,6 +62,7 @@ class MainTableViewCell: UITableViewCell {
         dayMeterDataLabel.text = ""
         nightMeterDataLabel.text = ""
         monthLabel.textColor = .gray
+        monthDifferenceCount.text = ""
     }
 }
 
@@ -67,18 +74,19 @@ extension MainTableViewCell {
         contentView.putOnView(nightMeterLabel)
         contentView.putOnView(dayMeterDataLabel)
         contentView.putOnView(nightMeterDataLabel)
+        contentView.putOnView(monthDifferenceCount)
     }
     
     func setupLayout() {
         NSLayoutConstraint.activate([
             dayMeterLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
-            dayMeterLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            dayMeterLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor, constant: -20),
             
             dayMeterDataLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
             dayMeterDataLabel.leadingAnchor.constraint(equalTo: dayMeterLabel.trailingAnchor, constant: 10),
             
             nightMeterLabel.topAnchor.constraint(equalTo: dayMeterLabel.bottomAnchor, constant: 10),
-            nightMeterLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            nightMeterLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor, constant: -20),
             nightMeterLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5),
             
             nightMeterDataLabel.topAnchor.constraint(equalTo: dayMeterDataLabel.bottomAnchor, constant: 10),
@@ -87,6 +95,9 @@ extension MainTableViewCell {
             
             monthLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             monthLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            
+            monthDifferenceCount.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            monthDifferenceCount.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
         ])
     }
 }
