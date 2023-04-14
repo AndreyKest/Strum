@@ -135,8 +135,11 @@ extension MainController: UITableViewDataSource, UITableViewDelegate {
             cell.nightMeterDataLabel.text = "\(indication.nightMeter)"
             cell.monthLabel.textColor = .black
             if let nextIndication = yearAnalysis.nextDate(after: indication, in: indicationData) {
-                let price = ((indication.dayMeter - nextIndication.dayMeter) * 1.68) + ((indication.nightMeter - nextIndication.nightMeter) * 0.9)
-                cell.monthDifferenceCount.text = "\(price)"
+                let dayPrice = 1.68
+                let nightPrice = 0.9
+                var price: Double = 0
+                price = (Double((indication.dayMeter - nextIndication.dayMeter)) * dayPrice) + (Double((indication.nightMeter - nextIndication.nightMeter)) * nightPrice)
+                cell.monthDifferenceCount.text = String(format: "%.2f", price)
             }
         }
         
